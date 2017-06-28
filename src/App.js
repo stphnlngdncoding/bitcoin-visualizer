@@ -66,7 +66,7 @@ class App extends Component {
     const newBlock = [...this.state.openTransactions];
     this.setState({
       openTransactions: [],
-      blockchain: [...this.state.blockchain, newBlock],
+      blockchain: [newBlock, ...this.state.blockchain ],
     })
   }
   makeTransaction() {
@@ -101,16 +101,20 @@ class App extends Component {
         {
           this.state.miners.map(node => <div>name: {node.name}, guess: {node.guess}</div>)
         }
-        {
-          this.state.openTransactions.map(trans => <div> {trans.address}: {trans.amount} </div>)
-        }
-        {
-          this.state.blockchain.map(block => {
-            return (
-              <span>block: {block.map(transaction => (<div>{transaction.address}: {transaction.amount}</div>))}</span>
-            )
-          })
-        }
+        <div className="transactions-list">
+          {
+            this.state.openTransactions.map(trans => <div> {trans.address}: {trans.amount} </div>)
+          }
+        </div>
+        <div className="blockchain">
+          {
+            this.state.blockchain.map(block => {
+              return (
+                <div className="block">block: {block.map(transaction => (<span>{transaction.address}: {transaction.amount}</span>))}</div>
+              )
+            })
+          }
+        </div>
       </div>
     );
   }
