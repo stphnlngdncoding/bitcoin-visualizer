@@ -29,11 +29,10 @@ class App extends Component {
     this.doWork = this.doWork.bind(this);
     this.makeTransaction = this.makeTransaction.bind(this);
     this.tick = this.tick.bind(this);
+    this.checkForSolve = this.checkForSolve.bind(this);
     this.state = {
       miners: nodes,
-      workNode: {
-        nonce: 90,
-      },
+      nonce: 90,
       transactions: [],
       // blockchain: 
     }
@@ -48,10 +47,18 @@ class App extends Component {
     clearInterval(this.state.ticker);
   }
   tick() {
-    console.log('ticking');
     everyTimeCall(this.doWork);
     everyTimeCall(this.makeTransaction);
-    everyThirdTimeCall(() => console.log('every third time'));
+    everyTimeCall(this.checkForSolve)
+  }
+  checkForSolve() {
+    //currently only grabs the first solver.
+    const guesses = this.state.miners.map(miner => miner.guess);
+    const winners = this.state.miners.filter(miner => miner.guess > this.state.nonce);
+    if (winners.length > 0) {
+      console.log('we have a winner');
+      console.log(`winner:${winners[0].name}`)
+    }
   }
   makeTransaction() {
     const transactionName = 'test';

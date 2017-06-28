@@ -2,7 +2,6 @@ const randomNumberFromZeroTo = (rangeEnd) => Math.round(Math.random() * rangeEnd
 
 const onNCall = (n) => (fn) => {
   const number = randomNumberFromZeroTo(n);
-  console.log('random number', number);
   number === 0 ? fn() : null;
 }
 
