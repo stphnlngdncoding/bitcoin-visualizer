@@ -30,17 +30,18 @@ class App extends Component {
     this.makeTransaction = this.makeTransaction.bind(this);
     this.tick = this.tick.bind(this);
     this.checkForSolve = this.checkForSolve.bind(this);
+    this.addBlock = this.addBlock.bind(this);
     this.state = {
       miners: nodes,
       nonce: 90,
-      transactions: [],
-      // blockchain: 
+      openTransactions: [],
+      blockchain: [],
     }
   }
 
   componentDidMount() {
     this.setState({
-      tickerId: setInterval(this.tick, 1000),
+      tickerId: setInterval(this.tick, 1500),
     });
   }
   componentDidUnmount() {
@@ -58,14 +59,22 @@ class App extends Component {
     if (winners.length > 0) {
       console.log('we have a winner');
       console.log(`winner:${winners[0].name}`)
+      this.addBlock();
     }
+  }
+  addBlock() {
+    const newBlock = [...this.state.openTransactions];
+    this.setState({
+      openTransactions: [],
+      blockchain: [...this.state.blockchain, newBlock],
+    })
   }
   makeTransaction() {
     const transactionName = 'test';
     const tranactionAmount = 1;
     this.setState({
-      transactions: [
-        ...this.state.transactions,
+      openTransactions: [
+        ...this.state.openTransactions,
         {
           address: transactionName,
           amount: tranactionAmount,
@@ -93,7 +102,14 @@ class App extends Component {
           this.state.miners.map(node => <div>name: {node.name}, guess: {node.guess}</div>)
         }
         {
-          this.state.transactions.map(trans => <div> {trans.address}: {trans.amount} </div>)
+          this.state.openTransactions.map(trans => <div> {trans.address}: {trans.amount} </div>)
+        }
+        {
+          this.state.blockchain.map(block => {
+            return (
+              <span>block: {block.map(transaction => (<div>{transaction.address}: {transaction.amount}</div>))}</span>
+            )
+          })
         }
       </div>
     );
