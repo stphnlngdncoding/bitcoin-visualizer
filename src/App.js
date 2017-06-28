@@ -27,14 +27,15 @@ class App extends Component {
     super(props);
     this.makeGuess = this.makeGuess.bind(this);
     this.doWork = this.doWork.bind(this);
+    this.makeTransaction = this.makeTransaction.bind(this);
     this.tick = this.tick.bind(this);
     this.state = {
       miners: nodes,
       workNode: {
         nonce: 90,
-        transactions: []
       },
-      ticker: 0,
+      transactions: [],
+      // blockchain: 
     }
   }
 
@@ -49,8 +50,21 @@ class App extends Component {
   tick() {
     console.log('ticking');
     everyTimeCall(this.doWork);
-    halfTheTimeCall(() => console.log('half the time'));
+    everyTimeCall(this.makeTransaction);
     everyThirdTimeCall(() => console.log('every third time'));
+  }
+  makeTransaction() {
+    const transactionName = 'test';
+    const tranactionAmount = 1;
+    this.setState({
+      transactions: [
+        ...this.state.transactions,
+        {
+          address: transactionName,
+          amount: tranactionAmount,
+        }
+      ]
+    })
   }
   makeGuess(node, i, minersArray) {
     const guess = Math.round(Math.random() * 100);
@@ -70,6 +84,9 @@ class App extends Component {
       <div className="App">
         {
           this.state.miners.map(node => <div>name: {node.name}, guess: {node.guess}</div>)
+        }
+        {
+          this.state.transactions.map(trans => <div> {trans.address}: {trans.amount} </div>)
         }
       </div>
     );
